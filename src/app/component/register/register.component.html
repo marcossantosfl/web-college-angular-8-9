@@ -1,0 +1,115 @@
+<div class="main-content">
+  <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
+    <div class="container">
+      <div class="header-body text-center mb-7">
+        <div class="row justify-content-center">
+          <div class="col-xl-5 col-lg-6 col-md-8 px-5"><h1 class="text-white">Welcome!</h1>
+            <p class="text-lead text-white">Something.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="separator separator-bottom separator-skew zindex-100">
+      <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+           xmlns="http://www.w3.org/2000/svg">
+        <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+      </svg>
+    </div>
+  </div>
+  <div class="container mt--9 pb-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div class="card bg-secondary border border-soft mb-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <div *ngIf="success" class="alert alert-success" role="alert">
+              <strong>Success!</strong> Account created!
+            </div>
+            <div *ngIf="fail" class="alert alert-danger" role="alert">
+              <strong>Fail!</strong> Account already exists!
+            </div>
+            <form #form="ngForm">
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span class="input-group-text"><i
+                    class="ni ni-hat-3"></i></span></div>
+                  <input #login="ngModel" [(ngModel)]="account.login" name="login" class="form-control"
+                         placeholder="Login" type="text"
+                         [ngClass]="{ 'is-invalid': submitted && login.errors}" required minlength="6" pattern="[A-Za-z0-9]+">
+                  <div *ngIf="submitted && login.errors" class="invalid-feedback">
+                    <div *ngIf="login.errors.required">Name required!</div>
+                    <div *ngIf="login.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="login.errors.minlength">Name must have at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span class="input-group-text"><i
+                    class="ni ni-hat-3"></i></span></div>
+                  <input #name="ngModel" [(ngModel)]="account.name" name="name" class="form-control"
+                         placeholder="Your name" type="text"
+                         [ngClass]="{ 'is-invalid': submitted }" required minlength="6" pattern="[A-Za-z0-9\s]+">
+                  <div *ngIf="submitted && name.errors" class="invalid-feedback">
+                    <div *ngIf="name.errors.required">Name required!</div>
+                    <div *ngIf="name.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="name.errors.minlength">Name must have at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span class="input-group-text"><i
+                    class="ni ni-email-83"></i></span></div>
+                  <input #email="ngModel" [(ngModel)]="account.email" name="email" class="form-control"
+                         placeholder="Your email" type="text"
+                         [ngClass]="{ 'is-invalid': submitted}" required minlength="6"
+                         pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$">
+                  <div *ngIf="submitted && email.errors" class="invalid-feedback">
+                    <div *ngIf="email.errors.required">Email required!</div>
+                    <div *ngIf="email.errors.pattern">A valid email!</div>
+                    <div *ngIf="email.errors.minlength">Email must have at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span class="input-group-text"><i
+                    class="ni ni-lock-circle-open"></i></span></div>
+                  <input #password="ngModel" [(ngModel)]="account.password" name="password" class="form-control"
+                         placeholder="Password" type="password" [ngClass]="{ 'is-invalid': submitted}" required minlength="6" pattern="[A-Za-z0-9]+">
+                  <div *ngIf="submitted && password.errors" class="invalid-feedback">
+                    <div *ngIf="password.errors.required">Password required!</div>
+                    <div *ngIf="password.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="password.errors.minlength">Password must have at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span class="input-group-text"><i
+                    class="ni ni-lock-circle-open"></i></span></div>
+                  <input #rpassword="ngModel" [(ngModel)]="repassword" name="rpassword" class="form-control"
+                         placeholder="Confirm password" type="password" [ngClass]="{ 'is-invalid': submitted}" required minlength="6" pattern="[A-Za-z0-9]+">
+                  <div *ngIf="MustMatch(password.value,rpassword.value)" class="invalid-feedback">Confirm password must match</div>
+                  <div *ngIf="submitted && rpassword.errors" class="invalid-feedback">
+                    <div *ngIf="rpassword.errors.required">Confirm password required!</div>
+                    <div *ngIf="rpassword.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="rpassword.errors.minlength">Confirm password must have at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <span [hidden]="!loading" class="spinner-border spinner-border-sm text-primary"></span>
+                <button [hidden]="loading" (click)="send()" [disabled]="form.invalid || MustMatch(password.value,rpassword.value) || loading" class="btn btn-primary my-4">Sign in</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6"><a [routerLink]="['/login']" routerLinkActive="router-link-active" href="javascript:void(0)" class="text-gray"><small>Forgot password?</small></a></div>
+          <div class="col-6 text-right"><a [routerLink]="['/register']" routerLinkActive="router-link-active" href="javascript:void(0)" class="text-gray"><small>Create new account</small></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

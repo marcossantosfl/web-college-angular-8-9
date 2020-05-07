@@ -1,0 +1,140 @@
+<div class="container text-center">
+  <button (click)="newComing()" data-toggle="modal" data-target="#modal-form" class="btn btn-success btn-icon-only rounded-circle"
+          type="button">
+    <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+  </button>
+</div>
+<div class="container mt-sm-5">
+  <span [hidden]="!loading" class="spinner-border spinner-border-sm text-primary"></span>
+  <div class="row">
+    <div class="col">
+      <div class="card bg-default shadow">
+        <div class="table-responsive">
+          <table class="table align-items-center table-white table-flush">
+            <thead class="thead-white">
+            <tr>
+              <th scope="col" class="sort" data-sort="name">To Do</th>
+              <th scope="col" class="sort" data-sort="budget">When</th>
+              <th scope="col" class="sort" data-sort="status">Notified</th>
+              <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody [hidden]="loading" *ngFor="let comings of account.coming, let i = index" class="list">
+            <tr>
+              <th scope="row">
+                <div class="media align-items-center">
+                  <div class="media-body"><span
+                    class="name mb-0 text-sm">{{comings.tittle}}</span></div>
+                </div>
+              </th>
+              <td><span class="badge badge-dot mr-4"><i class="bg-danger"></i> <span
+                class="status">{{comings.date}}</span></span>
+              </td>
+              <td>
+                <label class="custom-toggle"><input type="checkbox" [checked]="comings.notified > 0" disabled> <span
+                  class="custom-toggle-slider rounded-circle"></span></label>
+              </td>
+              <td class="table-actions">
+                <button (click)="editComing(i)" data-toggle="modal" data-target="#modal-form"
+                        class="btn  btn-success btn-icon-only rounded-circle" type="button">
+                  <span class="btn-inner--icon"><i class="ni ni-fat-add"></i></span>
+                </button>
+                <button (click)="deleteComing(comings.id, i)" class="btn btn-danger btn-icon-only rounded-circle"
+                        type="button">
+                  <span class="btn-inner--icon"><i class="ni ni-fat-remove"></i></span>
+                </button>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modal-form" tabindex="-1" role="dialog"
+     aria-labelledby="modal-form" aria-hidden="true">
+  <div class="modal-dialog modal- modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <div class="card bg-secondary border-0 mb-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <form #form="ngForm">
+              <div *ngIf="fail" class="alert alert-success" role="alert">
+                <strong>Fail!</strong> Contact the admin!
+              </div>
+              <div *ngIf="success" class="alert alert-success" role="alert">
+                <strong>Success!</strong> Coming up added / updated!
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span
+                    class="input-group-text"><i
+                    class="ni ni-hat-3"></i></span></div>
+                  <input #tittle="ngModel" [(ngModel)]="coming.tittle" name="tittle" class="form-control"
+                         placeholder="Try: to send an assigment" type="text"
+                         [ngClass]="{ 'is-invalid': submitted && tittle.errors}" required minlength="5"
+                         pattern="[A-Za-z0-9\s]+">
+                  <div *ngIf="submitted && tittle.errors" class="invalid-feedback">
+                    <div *ngIf="tittle.errors.required">Tittle required!</div>
+                    <div *ngIf="tittle.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="tittle.errors.minlength">Tittle must have at least 5 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group-prepend"><span
+                    class="input-group-text"><i
+                    class="ni ni-hat-3"></i></span></div>
+                  <textarea #description="ngModel" [(ngModel)]="coming.description" name="description"
+                            class="form-control" placeholder="Sending an assigment before 03-03-2020" type="text"
+                            [ngClass]="{ 'is-invalid': submitted && description.errors}" required minlength="5"
+                            pattern="[A-Za-z0-9\s]+">
+                  </textarea>
+                  <div *ngIf="submitted && description.errors" class="invalid-feedback">
+                    <div *ngIf="description.errors.required">Description required!</div>
+                    <div *ngIf="description.errors.pattern">Only letters and numbers!</div>
+                    <div *ngIf="description.errors.minlength">Description must have at least 5 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <div class="input-group input-group-merge input-group-alternative">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                    </div>
+                    <input #date="ngModel" [(ngModel)]="coming.date" name="date" class="form-control datepicker"
+                           id="datepicker" placeholder="Select date" type="text" required>
+                    <div *ngIf="submitted && date.errors" class="invalid-feedback">
+                      <div *ngIf="date.errors.required">Date required!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <label class="form-control-label"
+                       for="exampleFormControlSelect">Notification</label>
+                <select #notified="ngModel" [(ngModel)]="coming.notified" name="notified" class="form-control"
+                        id="exampleFormControlSelect" required>
+                  <option value="0">No notification</option>
+                  <option value="1">1 Day before</option>
+                  <option value="2">3 days before</option>
+                  <option value="3">1 week before</option>
+                </select>
+                <div *ngIf="submitted && notified.errors" class="invalid-feedback">
+                  <div *ngIf="notified.errors.required">Notification required!</div>
+                </div>
+              </div>
+              <div class="text-center">
+                <span [hidden]="!loading" class="spinner-border spinner-border-sm text-primary"></span>
+                <button (click)="send()" [hidden]="loading" [disabled]="form.invalid || submitted" type="button" class="btn btn-primary my-4">Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

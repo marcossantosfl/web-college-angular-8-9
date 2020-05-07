@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card bg-secondary border border-soft mb-0">
+        <div class="card-body px-lg-5 py-lg-5">
+          <div *ngIf="success" class="alert alert-success" role="alert">
+            <strong>Success!</strong> Account edited!
+          </div>
+          <form #form="ngForm">
+            <div class="form-group mb-3">
+              <div class="input-group input-group-merge input-group-alternative">
+                <div class="input-group-prepend"><span class="input-group-text"><i
+                  class="ni ni-hat-3"></i></span></div>
+                <input #name="ngModel" [(ngModel)]="account.name" name="name" class="form-control"
+                       placeholder="Your name" type="text"
+                       [ngClass]="{ 'is-invalid': submitted }" required minlength="6" pattern="[A-Za-z0-9]+">
+                <div *ngIf="submitted && name.errors" class="invalid-feedback">
+                  <div *ngIf="name.errors.required">Name required!</div>
+                  <div *ngIf="name.errors.pattern">Only letters and numbers!</div>
+                  <div *ngIf="name.errors.minlength">Name must have at least 6 characters</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mb-3">
+              <div class="input-group input-group-merge input-group-alternative">
+                <div class="input-group-prepend"><span class="input-group-text"><i
+                  class="ni ni-email-83"></i></span></div>
+                <input #email="ngModel" [(ngModel)]="account.email" name="email" class="form-control"
+                       placeholder="Your email" type="text"
+                       [ngClass]="{ 'is-invalid': submitted}" required minlength="6"
+                       pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$">
+                <div *ngIf="submitted && email.errors" class="invalid-feedback">
+                  <div *ngIf="email.errors.required">Email required!</div>
+                  <div *ngIf="email.errors.pattern">A valid email!</div>
+                  <div *ngIf="email.errors.minlength">Email must have at least 6 characters</div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <button (click)="send()" [disabled]="form.invalid || submitted" class="btn btn-primary my-4">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
